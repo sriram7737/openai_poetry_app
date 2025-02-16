@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Poetry Generator</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1 class="mt-5">AI-Powered Poetry Generator</h1>
+        <p>Enter your theme, choose a style, and let AI create poetry for you.</p>
+
+        <!-- Poetry Generation Form -->
+        <form id="poetryForm" method="POST" action="/generate_poetry">
+            <div class="form-group">
+                <label for="themeInput">Theme</label>
+                <input type="text" class="form-control" id="themeInput" name="theme" placeholder="Enter a theme or emotion">
+            </div>
+            <div class="form-group">
+                <label for="styleSelect">Style</label>
+                <select class="form-control" id="styleSelect" name="style">
+                    <option value="free verse">Free Verse</option>
+                    <option value="haiku">Haiku</option>
+                    <option value="sonnet">Sonnet</option>
+                    <option value="limerick">Limerick</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Generate Poetry</button>
+        </form>
+
+        <!-- Place to Display Generated Poem -->
+        <div id="poemResult" class="mt-4">
+            <!-- Generated poem will be displayed here -->
+        </div>
+    </div>
+
+    <!-- Optional JavaScript for dynamic content update without page refresh -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#poetryForm').on('submit', function(e) {
+                e.preventDefault(); // Prevent the form from submitting via the browser
+                $.ajax({
+                    type: 'POST',
+                    url: '/generate_poetry',
+                    data: $(this).serialize(),
+                    success: function(response) {
+                        // Display the generated poem
+                        $('#poemResult').html('<pre>' + response.content + '</pre>');
+                    },
+                    error: function(error) {
+                        // Handle errors
+                        $('#poemResult').html('<p>An error occurred.</p>');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

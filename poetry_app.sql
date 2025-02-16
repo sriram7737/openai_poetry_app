@@ -1,0 +1,73 @@
+CREATE DATABASE IF NOT EXISTS poetry_app;
+USE poetry_app;
+
+CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(255) UNIQUE NOT NULL,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    hashed_password VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE poems (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT,
+    title VARCHAR(255) NOT NULL,
+    content TEXT NOT NULL,
+    style VARCHAR(255),
+    theme VARCHAR(255),
+    is_public BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
+);
+
+
+CREATE TABLE collaborations (
+    poem_id INT,
+    user_id INT,
+    role VARCHAR(255),
+    PRIMARY KEY (poem_id, user_id),
+    FOREIGN KEY (poem_id) REFERENCES poems(id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+
+CREATE TABLE feedback (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    poem_id INT,
+    user_id INT,
+    content TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (poem_id) REFERENCES poems(id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+
+CREATE TABLE challenges (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    prompt TEXT NOT NULL,
+    start_date DATE NOT NULL,
+    end_date DATE NOT NULL
+);
+
+
+CREATE TABLE journals (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT,
+    entry_title VARCHAR(255),
+    entry_content TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+
+CREATE TABLE poem_analysis (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    poem_id INT,
+    analysis_content TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (poem_id) REFERENCES poems(id) ON DELETE CASCADE
+);
